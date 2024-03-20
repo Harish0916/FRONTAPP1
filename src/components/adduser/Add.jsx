@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import './add.css';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
+import { path } from '../../address.js';
+import toast from 'react-hot-toast';
 
 const Add = () => {
   const users = {
@@ -11,6 +13,7 @@ const Add = () => {
     password: ""
   }
   const [ user, setUser ] = useState(users);
+  const navigate = useNavigate();
 
   const inputHandler = (e) => {
     const {name, value} = e.target;
@@ -18,9 +21,11 @@ const Add = () => {
   }
   const submitForm = async (e) => {
     e.preventDefault();
-    await axios.post("https://backapp1.onrender.com/api/create", user)
+    await axios.post(`${path}/api/create`, user)
       .then((response)=>{
-        console.log(response);
+        // console.log(response);
+        toast.success(response.data.message, {position: 'top-right'});
+        navigate('/'); // after registration you will be redirect to homepage
       }).catch(error => console.log(error));
   }
 

@@ -1,8 +1,19 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import axios from 'axios';
+import { path } from '../../address.js';
 import "./user.css"
 
 const User = () => {
+    const [users, setUsers] = useState([]);
+
+    useEffect(()=>{
+        const fetchData = async ()=>{
+            const response = await axios.get(`${path}/api/getall`);
+            setUsers(response.data);
+        }
+        fetchData();
+    }, []);
   return (
     <div className='userTable'>
         <Link to={"/add"} className='addButton'>Add User</Link>
@@ -16,15 +27,21 @@ const User = () => {
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1.</td>
-                    <td>Harish0916</td>
-                    <td>harish0916@gmail.com</td>
-                    <td className='actionButtons'>
-                        <button><i className="fa-solid fa-trash"></i></button>
-                        <Link to={"/edit"}><i className="fa-solid fa-pen-to-square"></i></Link>
-                    </td>
-                </tr>
+                {
+                    users.map((user, index)=>{
+                        return (
+                            <tr key={user._id}>
+                                <td>{index+1}</td>
+                                <td>{user.fname} {user.lname}</td>
+                                <td>{user.email}</td>
+                                <td className='actionButtons'>
+                                    <button><i className="fa-solid fa-trash"></i></button>
+                                    <Link to={`/edit/`+user._id}><i className="fa-solid fa-pen-to-square"></i></Link>
+                                </td>
+                            </tr>
+                        )
+                    })
+                }
             </tbody>
         </table>
     </div>
